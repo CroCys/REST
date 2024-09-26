@@ -1,6 +1,6 @@
 package com.cardealer.service;
 
-import com.cardealer.dto.ManufacturerDTO;
+import com.cardealer.dto.ManufacturerDto;
 import com.cardealer.repository.ManufacturerRepository;
 
 import java.sql.SQLException;
@@ -12,15 +12,15 @@ public class ManufacturerService {
         this.manufacturerRepository = manufacturerRepository;
     }
 
-    public ManufacturerDTO getManufacturerById(int id) throws SQLException {
+    public ManufacturerDto getManufacturerById(int id) throws SQLException {
         return manufacturerRepository.getManufacturerById(id);
     }
 
-    public void addManufacturer(ManufacturerDTO manufacturerDTO) throws SQLException {
+    public void addManufacturer(ManufacturerDto manufacturerDTO) throws SQLException {
         manufacturerRepository.addManufacturer(manufacturerDTO);
     }
 
-    public void updateManufacturer(ManufacturerDTO manufacturerDTO) throws SQLException {
+    public void updateManufacturer(ManufacturerDto manufacturerDTO) throws SQLException {
         manufacturerRepository.updateManufacturer(manufacturerDTO);
     }
 

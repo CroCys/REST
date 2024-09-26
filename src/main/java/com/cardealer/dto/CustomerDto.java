@@ -1,6 +1,6 @@
 package com.cardealer.dto;
 
-public class ManufacturerDTO {
+public class CustomerDto {
     private int id;
     private String name;
 

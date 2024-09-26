@@ -1,6 +1,6 @@
 package com.cardealer.service;
 
-import com.cardealer.dto.CarDTO;
+import com.cardealer.dto.CarDto;
 import com.cardealer.repository.CarRepository;
 
 import java.sql.SQLException;
@@ -12,15 +12,15 @@ public class CarService {
         this.carRepository = carRepository;
     }
 
-    public CarDTO getCarById(int id) throws SQLException {
+    public CarDto getCarById(int id) throws SQLException {
         return carRepository.getCarById(id);
     }
 
-    public void addCar(CarDTO carDTO) throws SQLException {
+    public void addCar(CarDto carDTO) throws SQLException {
         carRepository.addCar(carDTO);
     }
 
-    public void updateCar(CarDTO carDTO) throws SQLException {
+    public void updateCar(CarDto carDTO) throws SQLException {
         carRepository.updateCar(carDTO);
     }
 

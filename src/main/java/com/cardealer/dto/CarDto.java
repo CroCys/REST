@@ -2,7 +2,7 @@ package com.cardealer.dto;
 
 import java.util.List;
 
-public class CarDTO {
+public class CarDto {
     private int id;
     private String model;
     private int manufacturerId;

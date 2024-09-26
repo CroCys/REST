@@ -1,10 +1,9 @@
 package com.cardealer.controller;
 
-import com.cardealer.dto.CarDTO;
+import com.cardealer.dto.CarDto;
 import com.cardealer.repository.CarRepository;
 import com.cardealer.service.CarService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,7 +16,7 @@ public class CarServlet extends HttpServlet {
     private ObjectMapper objectMapper;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         objectMapper = new ObjectMapper();
         try {
             carService = new CarService(new CarRepository());
@@ -27,12 +26,12 @@ public class CarServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String idParam = req.getParameter("id");
         if (idParam != null) {
             int id = Integer.parseInt(idParam);
             try {
-                CarDTO car = carService.getCarById(id);
+                CarDto car = carService.getCarById(id);
                 if (car != null) {
                     resp.setContentType("application/json");
                     resp.getWriter().write(objectMapper.writeValueAsString(car));
@@ -51,9 +50,9 @@ public class CarServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            CarDTO carDTO = objectMapper.readValue(req.getInputStream(), CarDTO.class);
+            CarDto carDTO = objectMapper.readValue(req.getInputStream(), CarDto.class);
             carService.addCar(carDTO);
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (SQLException e) {
@@ -63,9 +62,9 @@ public class CarServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            CarDTO carDTO = objectMapper.readValue(req.getInputStream(), CarDTO.class);
+            CarDto carDTO = objectMapper.readValue(req.getInputStream(), CarDto.class);
             carService.updateCar(carDTO);
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (SQLException e) {
@@ -75,7 +74,7 @@ public class CarServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String idParam = req.getParameter("id");
         if (idParam != null) {
             int id = Integer.parseInt(idParam);

@@ -1,6 +1,6 @@
 package com.cardealer.repository;
 
-import com.cardealer.dto.ManufacturerDTO;
+import com.cardealer.dto.ManufacturerDto;
 import com.cardealer.entity.Manufacturer;
 import com.cardealer.mapper.ManufacturerMapper;
 import com.cardealer.util.DataBaseUtil;
@@ -17,7 +17,7 @@ public class ManufacturerRepository {
         this.connection = DataBaseUtil.getConnection();
     }
 
-    public ManufacturerDTO getManufacturerById(int id) throws SQLException {
+    public ManufacturerDto getManufacturerById(int id) throws SQLException {
         String query = "SELECT * FROM manufacturer WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
@@ -30,7 +30,7 @@ public class ManufacturerRepository {
         return null;
     }
 
-    public void addManufacturer(ManufacturerDTO manufacturerDTO) throws SQLException {
+    public void addManufacturer(ManufacturerDto manufacturerDTO) throws SQLException {
         Manufacturer manufacturer = ManufacturerMapper.toEntity(manufacturerDTO);
 
         String query = "INSERT INTO manufacturer (name) VALUES (?)";
@@ -40,7 +40,7 @@ public class ManufacturerRepository {
         }
     }
 
-    public void updateManufacturer(ManufacturerDTO manufacturerDTO) throws SQLException {
+    public void updateManufacturer(ManufacturerDto manufacturerDTO) throws SQLException {
         Manufacturer manufacturer = ManufacturerMapper.toEntity(manufacturerDTO);
 
         String query = "UPDATE manufacturer SET name = ? WHERE id = ?";

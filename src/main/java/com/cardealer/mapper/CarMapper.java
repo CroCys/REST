@@ -1,6 +1,6 @@
 package com.cardealer.mapper;
 
-import com.cardealer.dto.CarDTO;
+import com.cardealer.dto.CarDto;
 import com.cardealer.entity.Car;
 import com.cardealer.entity.Customer;
 import com.cardealer.entity.Manufacturer;
@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CarMapper {
-    public static CarDTO toDTO(Car car) {
-        CarDTO dto = new CarDTO();
+    public static CarDto toDTO(Car car) {
+        CarDto dto = new CarDto();
         dto.setId(car.getId());
         dto.setModel(car.getModel());
         dto.setManufacturerId(car.getManufacturer().getId());
@@ -18,7 +18,7 @@ public class CarMapper {
         return dto;
     }
 
-    public static Car toEntity(CarDTO dto, Manufacturer manufacturer, List<Customer> customers) {
+    public static Car toEntity(CarDto dto, Manufacturer manufacturer, List<Customer> customers) {
         Car car = new Car();
         car.setId(dto.getId());
         car.setModel(dto.getModel());

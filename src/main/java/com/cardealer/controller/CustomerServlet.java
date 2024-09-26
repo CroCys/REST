@@ -1,10 +1,9 @@
 package com.cardealer.controller;
 
-import com.cardealer.dto.CustomerDTO;
+import com.cardealer.dto.CustomerDto;
 import com.cardealer.repository.CustomerRepository;
 import com.cardealer.service.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,7 +16,7 @@ public class CustomerServlet extends HttpServlet {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         objectMapper = new ObjectMapper();
         try {
             customerService = new CustomerService(new CustomerRepository());
@@ -27,12 +26,12 @@ public class CustomerServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String idParam = req.getParameter("id");
         if (idParam != null) {
             int id = Integer.parseInt(idParam);
             try {
-                CustomerDTO customer = customerService.getCustomerById(id);
+                CustomerDto customer = customerService.getCustomerById(id);
                 if (customer != null) {
                     resp.setContentType("application/json");
                     resp.getWriter().write(objectMapper.writeValueAsString(customer));
@@ -51,9 +50,9 @@ public class CustomerServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            CustomerDTO customerDTO = objectMapper.readValue(req.getInputStream(), CustomerDTO.class);
+            CustomerDto customerDTO = objectMapper.readValue(req.getInputStream(), CustomerDto.class);
             customerService.addCustomer(customerDTO);
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (SQLException e) {
@@ -63,9 +62,9 @@ public class CustomerServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            CustomerDTO customerDTO = objectMapper.readValue(req.getInputStream(), CustomerDTO.class);
+            CustomerDto customerDTO = objectMapper.readValue(req.getInputStream(), CustomerDto.class);
             customerService.updateCustomer(customerDTO);
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (SQLException e) {
@@ -75,7 +74,7 @@ public class CustomerServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String idParam = req.getParameter("id");
         if (idParam != null) {
             int id = Integer.parseInt(idParam);

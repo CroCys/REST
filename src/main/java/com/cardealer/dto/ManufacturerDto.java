@@ -1,11 +1,8 @@
 package com.cardealer.dto;
 
-import java.util.List;
-
-public class CustomerDTO {
+public class ManufacturerDto {
     private int id;
     private String name;
-    private List<Integer> carIds;
 
     public int getId() {
         return id;
@@ -21,13 +18,5 @@ public class CustomerDTO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Integer> getCarIds() {
-        return carIds;
-    }
-
-    public void setCarIds(List<Integer> carIds) {
-        this.carIds = carIds;
     }
 }

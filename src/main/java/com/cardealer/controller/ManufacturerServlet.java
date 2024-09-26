@@ -1,10 +1,9 @@
 package com.cardealer.controller;
 
-import com.cardealer.dto.ManufacturerDTO;
+import com.cardealer.dto.ManufacturerDto;
 import com.cardealer.repository.ManufacturerRepository;
 import com.cardealer.service.ManufacturerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,7 +16,7 @@ public class ManufacturerServlet extends HttpServlet {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         objectMapper = new ObjectMapper();
         try {
             manufacturerService = new ManufacturerService(new ManufacturerRepository());
@@ -27,12 +26,12 @@ public class ManufacturerServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String idParam = req.getParameter("id");
         if (idParam != null) {
             int id = Integer.parseInt(idParam);
             try {
-                ManufacturerDTO manufacturer = manufacturerService.getManufacturerById(id);
+                ManufacturerDto manufacturer = manufacturerService.getManufacturerById(id);
                 if (manufacturer != null) {
                     resp.setContentType("application/json");
                     resp.getWriter().write(objectMapper.writeValueAsString(manufacturer));
@@ -51,9 +50,9 @@ public class ManufacturerServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            ManufacturerDTO manufacturerDTO = objectMapper.readValue(req.getInputStream(), ManufacturerDTO.class);
+            ManufacturerDto manufacturerDTO = objectMapper.readValue(req.getInputStream(), ManufacturerDto.class);
             manufacturerService.addManufacturer(manufacturerDTO);
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (SQLException e) {
@@ -63,9 +62,9 @@ public class ManufacturerServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            ManufacturerDTO manufacturerDTO = objectMapper.readValue(req.getInputStream(), ManufacturerDTO.class);
+            ManufacturerDto manufacturerDTO = objectMapper.readValue(req.getInputStream(), ManufacturerDto.class);
             manufacturerService.updateManufacturer(manufacturerDTO);
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (SQLException e) {
@@ -75,7 +74,7 @@ public class ManufacturerServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String idParam = req.getParameter("id");
         if (idParam != null) {
             int id = Integer.parseInt(idParam);

@@ -22,6 +22,7 @@ public class DataBaseUtil {
             config.setUsername(properties.getProperty("jdbc.username"));
             config.setPassword(properties.getProperty("jdbc.password"));
             config.setMaximumPoolSize(Integer.parseInt(properties.getProperty("jdbc.pool.size")));
+            config.setDriverClassName("org.postgresql.Driver");
 
             dataSource = new HikariDataSource(config);
 

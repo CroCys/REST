@@ -1,6 +1,6 @@
 package com.cardealer.repository;
 
-import com.cardealer.dto.CarDTO;
+import com.cardealer.dto.CarDto;
 import com.cardealer.entity.Car;
 import com.cardealer.entity.Customer;
 import com.cardealer.entity.Manufacturer;
@@ -20,7 +20,7 @@ public class CarRepository {
         this.connection = DataBaseUtil.getConnection();
     }
 
-    public CarDTO getCarById(int id) throws SQLException {
+    public CarDto getCarById(int id) throws SQLException {
         String query = "SELECT * FROM car WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
@@ -33,7 +33,7 @@ public class CarRepository {
         return null;
     }
 
-    public void addCar(CarDTO carDTO) throws SQLException {
+    public void addCar(CarDto carDTO) throws SQLException {
         Manufacturer manufacturer = getManufacturerById(carDTO.getManufacturerId());
         List<Customer> customers = getCustomersByIds(carDTO.getCustomerIds());
 
@@ -50,7 +50,7 @@ public class CarRepository {
         updateCarCustomers(car);
     }
 
-    public void updateCar(CarDTO carDTO) throws SQLException {
+    public void updateCar(CarDto carDTO) throws SQLException {
         Manufacturer manufacturer = getManufacturerById(carDTO.getManufacturerId());
         List<Customer> customers = getCustomersByIds(carDTO.getCustomerIds());
 

@@ -1,5 +1,6 @@
 package com.cardealer.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Customer {
@@ -8,6 +9,7 @@ public class Customer {
     private List<Car> cars;
 
     public Customer() {
+        this.cars = new ArrayList<>();
     }
 
     public Customer(int id, String name, List<Car> cars) {
