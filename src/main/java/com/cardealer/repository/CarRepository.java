@@ -25,7 +25,7 @@ public class CarRepository {
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
+            if (resultSet != null && resultSet.next()) {
                 Car car = mapToCar(resultSet);
                 return CarMapper.toDTO(car);
             }
@@ -46,7 +46,6 @@ public class CarRepository {
             statement.executeUpdate();
         }
 
-        // Update relationships (Car-Customer)
         updateCarCustomers(car);
     }
 
@@ -69,6 +68,12 @@ public class CarRepository {
     }
 
     public void deleteCar(int id) throws SQLException {
+        String deleteCarCustomerSql = "DELETE FROM car_customer WHERE car_id = ?";
+        try (PreparedStatement deleteCarCustomerStmt = connection.prepareStatement(deleteCarCustomerSql)) {
+            deleteCarCustomerStmt.setInt(1, id);
+            deleteCarCustomerStmt.executeUpdate();
+        }
+
         String query = "DELETE FROM car WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
@@ -76,7 +81,7 @@ public class CarRepository {
         }
     }
 
-    private Manufacturer getManufacturerById(int manufacturerId) throws SQLException {
+    Manufacturer getManufacturerById(int manufacturerId) throws SQLException {
         String query = "SELECT * FROM manufacturer WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, manufacturerId);
@@ -88,7 +93,7 @@ public class CarRepository {
         return null;
     }
 
-    private List<Customer> getCustomersByIds(List<Integer> customerIds) throws SQLException {
+    List<Customer> getCustomersByIds(List<Integer> customerIds) throws SQLException {
         if (customerIds.isEmpty()) return new ArrayList<>();
 
         String query = "SELECT * FROM customer WHERE id = ANY (?)";

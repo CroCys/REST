@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class ManufacturerServlet extends HttpServlet {
-    private ManufacturerService manufacturerService;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    protected ManufacturerService manufacturerService;
+    protected ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void init() {

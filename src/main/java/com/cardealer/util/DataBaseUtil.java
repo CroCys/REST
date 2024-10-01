@@ -13,6 +13,10 @@ public class DataBaseUtil {
     private static HikariDataSource dataSource;
 
     static {
+        initDataSource();
+    }
+
+    private static void initDataSource() {
         try (InputStream input = DataBaseUtil.class.getClassLoader().getResourceAsStream("db.properties")) {
             Properties properties = new Properties();
             properties.load(input);
@@ -25,7 +29,6 @@ public class DataBaseUtil {
             config.setDriverClassName("org.postgresql.Driver");
 
             dataSource = new HikariDataSource(config);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -33,5 +36,9 @@ public class DataBaseUtil {
 
     public static Connection getConnection() throws SQLException {
         return dataSource.getConnection();
+    }
+
+    public static void setDataSource(HikariDataSource ds) {
+        dataSource = ds;
     }
 }

@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class CarServlet extends HttpServlet {
-    private CarService carService;
-    private ObjectMapper objectMapper;
+    protected CarService carService;
+    protected ObjectMapper objectMapper;
 
     @Override
     public void init() {

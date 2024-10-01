@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class CustomerServlet extends HttpServlet {
-    private CustomerService customerService;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    protected CustomerService customerService;
+    protected ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void init() {
