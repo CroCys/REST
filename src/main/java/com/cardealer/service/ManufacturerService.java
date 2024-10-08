@@ -6,10 +6,10 @@ import com.cardealer.repository.ManufacturerRepository;
 import java.sql.SQLException;
 
 public class ManufacturerService {
-    private final ManufacturerRepository manufacturerRepository;
+    private ManufacturerRepository manufacturerRepository;
 
-    public ManufacturerService(ManufacturerRepository manufacturerRepository) {
-        this.manufacturerRepository = manufacturerRepository;
+    public ManufacturerService() throws SQLException {
+        manufacturerRepository = new ManufacturerRepository();
     }
 
     public ManufacturerDto getManufacturerById(int id) throws SQLException {

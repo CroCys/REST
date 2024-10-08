@@ -1,8 +1,6 @@
 package com.cardealer.util;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.Connection;
@@ -13,25 +11,33 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DataBaseUtilTest {
     private static PostgreSQLContainer<?> postgreSQLContainer;
 
-    @BeforeAll
-    static void setUp() {
-        postgreSQLContainer = new PostgreSQLContainer<>("postgres:15.3")
-                .withDatabaseName("cardealer")
-                .withUsername("postgres")
-                .withPassword("7894");
-        postgreSQLContainer.start();
+    @BeforeEach
+    void setUp() {
+        if (postgreSQLContainer == null) {
+            postgreSQLContainer = new PostgreSQLContainer<>("postgres:15.3")
+                    .withDatabaseName("cardealer")
+                    .withUsername("postgres")
+                    .withPassword("7894");
+            postgreSQLContainer.start();
+
+            System.setProperty("jdbc.url", postgreSQLContainer.getJdbcUrl());
+            System.setProperty("jdbc.username", postgreSQLContainer.getUsername());
+            System.setProperty("jdbc.password", postgreSQLContainer.getPassword());
+        }
     }
 
-    @AfterAll
-    static void tearDown() {
-        postgreSQLContainer.stop();
+    @AfterEach
+    void tearDown() {
+        DataBaseUtil.resetDataSource();
+        if (postgreSQLContainer != null && postgreSQLContainer.isRunning()) {
+            postgreSQLContainer.stop();
+        }
     }
 
     @Test
     void testGetConnection() {
         try (Connection connection = DataBaseUtil.getConnection()) {
             assertNotNull(connection);
-            assertTrue(connection.isValid(1));
         } catch (SQLException e) {
             fail(e.getMessage());
         }

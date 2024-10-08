@@ -11,15 +11,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ManufacturerRepository {
-    private final Connection connection;
-
-    public ManufacturerRepository() throws SQLException {
-        this.connection = DataBaseUtil.getConnection();
-    }
 
     public ManufacturerDto getManufacturerById(int id) throws SQLException {
         String query = "SELECT * FROM manufacturer WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = DataBaseUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -27,14 +23,15 @@ public class ManufacturerRepository {
                 return ManufacturerMapper.toDTO(manufacturer);
             }
         }
-        return null;
+        return new ManufacturerDto();
     }
 
     public void addManufacturer(ManufacturerDto manufacturerDTO) throws SQLException {
         Manufacturer manufacturer = ManufacturerMapper.toEntity(manufacturerDTO);
 
         String query = "INSERT INTO manufacturer (name) VALUES (?)";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = DataBaseUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, manufacturer.getName());
             statement.executeUpdate();
         }
@@ -44,7 +41,8 @@ public class ManufacturerRepository {
         Manufacturer manufacturer = ManufacturerMapper.toEntity(manufacturerDTO);
 
         String query = "UPDATE manufacturer SET name = ? WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = DataBaseUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, manufacturer.getName());
             statement.setInt(2, manufacturer.getId());
             statement.executeUpdate();
@@ -53,7 +51,8 @@ public class ManufacturerRepository {
 
     public void deleteManufacturer(int id) throws SQLException {
         String query = "DELETE FROM manufacturer WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = DataBaseUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             statement.executeUpdate();
         }

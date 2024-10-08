@@ -1,7 +1,6 @@
 package com.cardealer.controller;
 
 import com.cardealer.dto.CarDto;
-import com.cardealer.repository.CarRepository;
 import com.cardealer.service.CarService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServlet;
@@ -19,7 +18,7 @@ public class CarServlet extends HttpServlet {
     public void init() {
         objectMapper = new ObjectMapper();
         try {
-            carService = new CarService(new CarRepository());
+            carService = new CarService();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -40,8 +39,8 @@ public class CarServlet extends HttpServlet {
                     resp.getWriter().write("Car not found");
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                throw new RuntimeException(e);
             }
         } else {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -56,8 +55,8 @@ public class CarServlet extends HttpServlet {
             carService.addCar(carDTO);
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (SQLException e) {
-            e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            throw new RuntimeException(e);
         }
     }
 
@@ -68,8 +67,8 @@ public class CarServlet extends HttpServlet {
             carService.updateCar(carDTO);
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (SQLException e) {
-            e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            throw new RuntimeException(e);
         }
     }
 
@@ -82,8 +81,8 @@ public class CarServlet extends HttpServlet {
                 carService.deleteCar(id);
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             } catch (SQLException e) {
-                e.printStackTrace();
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                throw new RuntimeException(e);
             }
         } else {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

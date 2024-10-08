@@ -1,86 +1,105 @@
-//package com.cardealer.repository;
-//
-//import com.cardealer.dto.CarDto;
-//import com.cardealer.entity.Customer;
-//import com.cardealer.entity.Manufacturer;
-//import com.cardealer.util.DataBaseUtil;
-//import com.zaxxer.hikari.HikariDataSource;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.Mock;
-//import org.mockito.MockitoAnnotations;
-//
-//import java.sql.*;
-//import java.util.Arrays;
-//
-//import static org.mockito.ArgumentMatchers.anyString;
-//import static org.mockito.Mockito.*;
-//
-//public class CarRepositoryTest {
-//    private CarRepository carRepository;
-//
-//    @Mock
-//    private HikariDataSource mockDataSource;
-//
-//    @Mock
-//    private Connection mockConnection;
-//
-//    @Mock
-//    private PreparedStatement mockStatement;
-//
-//    @Mock
-//    private ResultSet mockResultSet;
-//
-//    @Mock
-//    private Manufacturer mockManufacturer;
-//
-//    @Mock
-//    private Customer mockCustomer;
-//
-//    @BeforeEach
-//    public void setUp() throws SQLException {
-//        MockitoAnnotations.openMocks(this);
-//        when(mockDataSource.getConnection()).thenReturn(mockConnection);
-//        DataBaseUtil.setDataSource(mockDataSource);
-//        carRepository = new CarRepository();
-//
-//        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
-//    }
-//
+package com.cardealer.repository;
+
+import com.cardealer.dto.CarDto;
+import com.cardealer.entity.Car;
+import com.cardealer.entity.Customer;
+import com.cardealer.entity.Manufacturer;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.sql.SQLException;
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class CarRepositoryTest {
+
+    @Mock
+    private CarRepository carRepository;
+
+    @InjectMocks
+    private CarRepository carRepoUnderTest;
+
+    private CarDto carDto;
+    private Car car;
+
+    @BeforeEach
+    void setUp() {
+        carDto = new CarDto();
+        carDto.setId(1);
+        carDto.setModel("Tesla");
+        carDto.setCustomerIds(Collections.singletonList(3));
+        carDto.setManufacturerId(3);
+
+        Manufacturer manufacturer = new Manufacturer();
+        manufacturer.setId(3);
+        Customer customer = new Customer();
+        customer.setId(3);
+        car = new Car();
+        car.setId(1);
+        car.setModel("Tesla");
+        car.setManufacturer(manufacturer);
+        car.setCustomers(Collections.singletonList(customer));
+    }
+
+    @Test
+    void testGetCarById() throws SQLException {
+        when(carRepository.getCarById(1)).thenReturn(carDto);
+
+        CarDto result = carRepository.getCarById(1);
+
+        assertEquals(carDto, result);
+
+        verify(carRepository, times(1)).getCarById(1);
+    }
+
+    @Test
+    void testAddCar() throws SQLException {
+        Manufacturer manufacturer = new Manufacturer();
+        manufacturer.setId(3);
+
+        Car car = new Car();
+        car.setId(1);
+        car.setModel("Tesla");
+        car.setManufacturer(manufacturer);
+        car.setCustomers(Collections.emptyList());
+
+        doNothing().when(carRepository).addCar(carDto);
+
+        carRepository.addCar(carDto);
+
+        verify(carRepository, times(1)).addCar(carDto);
+    }
+
 //    @Test
-//    public void testAddCar() throws SQLException {
-//        CarDto carDto = new CarDto();
-//        carDto.setModel("New Model");
-//        carDto.setManufacturerId(1);
-//        carDto.setCustomerIds(Arrays.asList(1, 2));
+//    void testUpdateCar() throws SQLException {
+//        Manufacturer manufacturer = new Manufacturer();
+//        manufacturer.setId(3);
 //
-//        when(carRepository.getManufacturerById(1)).thenReturn(mockManufacturer);
+//        Car car = new Car();
+//        car.setId(carDto.getId());
+//        car.setModel(carDto.getModel());
+//        car.setManufacturer(manufacturer);
+//        car.setCustomers(Collections.emptyList());
 //
-//        when(carRepository.getCustomersByIds(Arrays.asList(1, 2))).thenReturn(Arrays.asList(mockCustomer, mockCustomer));
+//        when(carRepository.getCarById(carDto.getId())).thenReturn(carDto);
 //
-//        when(mockStatement.executeUpdate()).thenReturn(1);
+//        Car mappedCar = CarMapper.toEntity(carDto, manufacturer, Collections.emptyList());
 //
-//        carRepository.addCar(carDto);
+//        carRepoUnderTest.updateCar(carDto);
 //
-//        verify(mockStatement, times(1)).executeUpdate();
+//        verify(carRepository, times(1)).updateCar(eq(carDto));
 //    }
-//
-//    @Test
-//    public void testUpdateCar() throws SQLException {
-//        CarDto carDto = new CarDto();
-//        carDto.setId(1);
-//        carDto.setModel("Updated Model");
-//        carDto.setManufacturerId(1);
-//        carDto.setCustomerIds(Arrays.asList(1, 2));
-//
-//        when(carRepository.getManufacturerById(1)).thenReturn(mockManufacturer);
-//
-//        when(carRepository.getCustomersByIds(Arrays.asList(1, 2))).thenReturn(Arrays.asList(mockCustomer, mockCustomer));
-//
-//        when(mockStatement.executeUpdate()).thenReturn(1);
-//
-//        carRepository.updateCar(carDto);
-//
-//        verify(mockStatement, times(1)).executeUpdate();
-//    }
-//}
+
+    @Test
+    void testDeleteCar() throws SQLException {
+        carRepository.deleteCar(1);
+        verify(carRepository, times(1)).deleteCar(1);
+    }
+}

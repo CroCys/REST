@@ -6,10 +6,10 @@ import com.cardealer.repository.CustomerRepository;
 import java.sql.SQLException;
 
 public class CustomerService {
-    private final CustomerRepository customerRepository;
+    private CustomerRepository customerRepository;
 
-    public CustomerService(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
+    public CustomerService() throws SQLException {
+        customerRepository = new CustomerRepository();
     }
 
     public CustomerDto getCustomerById(int id) throws SQLException {

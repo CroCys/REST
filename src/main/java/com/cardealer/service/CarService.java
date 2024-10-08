@@ -6,10 +6,10 @@ import com.cardealer.repository.CarRepository;
 import java.sql.SQLException;
 
 public class CarService {
-    private final CarRepository carRepository;
+    private CarRepository carRepository;
 
-    public CarService(CarRepository carRepository) {
-        this.carRepository = carRepository;
+    public CarService() throws SQLException {
+        carRepository = new CarRepository();
     }
 
     public CarDto getCarById(int id) throws SQLException {

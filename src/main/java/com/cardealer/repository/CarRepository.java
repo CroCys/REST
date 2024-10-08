@@ -14,15 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CarRepository {
-    private final Connection connection;
-
-    public CarRepository() throws SQLException {
-        this.connection = DataBaseUtil.getConnection();
-    }
 
     public CarDto getCarById(int id) throws SQLException {
         String query = "SELECT * FROM car WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = DataBaseUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet != null && resultSet.next()) {
@@ -30,7 +26,7 @@ public class CarRepository {
                 return CarMapper.toDTO(car);
             }
         }
-        return null;
+        return new CarDto();
     }
 
     public void addCar(CarDto carDTO) throws SQLException {
@@ -40,7 +36,8 @@ public class CarRepository {
         Car car = CarMapper.toEntity(carDTO, manufacturer, customers);
 
         String query = "INSERT INTO car (model, manufacturer_id) VALUES (?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = DataBaseUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, car.getModel());
             statement.setInt(2, car.getManufacturer().getId());
             statement.executeUpdate();
@@ -56,7 +53,8 @@ public class CarRepository {
         Car car = CarMapper.toEntity(carDTO, manufacturer, customers);
 
         String query = "UPDATE car SET model = ?, manufacturer_id = ? WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = DataBaseUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, car.getModel());
             statement.setInt(2, car.getManufacturer().getId());
             statement.setInt(3, car.getId());
@@ -68,14 +66,23 @@ public class CarRepository {
     }
 
     public void deleteCar(int id) throws SQLException {
+        deleteCarCustomers(id); // Удаляем связи с клиентами
+        deleteCarById(id);      // Удаляем автомобиль
+    }
+
+    private void deleteCarCustomers(int carId) throws SQLException {
         String deleteCarCustomerSql = "DELETE FROM car_customer WHERE car_id = ?";
-        try (PreparedStatement deleteCarCustomerStmt = connection.prepareStatement(deleteCarCustomerSql)) {
-            deleteCarCustomerStmt.setInt(1, id);
+        try (Connection connection = DataBaseUtil.getConnection();
+             PreparedStatement deleteCarCustomerStmt = connection.prepareStatement(deleteCarCustomerSql)) {
+            deleteCarCustomerStmt.setInt(1, carId);
             deleteCarCustomerStmt.executeUpdate();
         }
+    }
 
+    private void deleteCarById(int id) throws SQLException {
         String query = "DELETE FROM car WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = DataBaseUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             statement.executeUpdate();
         }
@@ -83,7 +90,8 @@ public class CarRepository {
 
     Manufacturer getManufacturerById(int manufacturerId) throws SQLException {
         String query = "SELECT * FROM manufacturer WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = DataBaseUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, manufacturerId);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -97,7 +105,8 @@ public class CarRepository {
         if (customerIds.isEmpty()) return new ArrayList<>();
 
         String query = "SELECT * FROM customer WHERE id = ANY (?)";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = DataBaseUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setArray(1, connection.createArrayOf("INTEGER", customerIds.toArray()));
             ResultSet resultSet = statement.executeQuery();
             List<Customer> customers = new ArrayList<>();
@@ -108,15 +117,17 @@ public class CarRepository {
         }
     }
 
-    private void updateCarCustomers(Car car) throws SQLException {
+    void updateCarCustomers(Car car) throws SQLException {
         String deleteQuery = "DELETE FROM car_customer WHERE car_id = ?";
-        try (PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery)) {
+        try (Connection connection = DataBaseUtil.getConnection();
+             PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery)) {
             deleteStatement.setInt(1, car.getId());
             deleteStatement.executeUpdate();
         }
 
         String insertQuery = "INSERT INTO car_customer (car_id, customer_id) VALUES (?, ?)";
-        try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
+        try (Connection connection = DataBaseUtil.getConnection();
+             PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
             for (Customer customer : car.getCustomers()) {
                 insertStatement.setInt(1, car.getId());
                 insertStatement.setInt(2, customer.getId());
@@ -144,7 +155,8 @@ public class CarRepository {
         String query = "SELECT customer.* FROM customer " +
                 "JOIN car_customer ON customer.id = car_customer.customer_id " +
                 "WHERE car_customer.car_id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = DataBaseUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, carId);
             ResultSet resultSet = statement.executeQuery();
             List<Customer> customers = new ArrayList<>();

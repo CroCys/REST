@@ -12,10 +12,6 @@ import java.util.Properties;
 public class DataBaseUtil {
     private static HikariDataSource dataSource;
 
-    static {
-        initDataSource();
-    }
-
     private static void initDataSource() {
         try (InputStream input = DataBaseUtil.class.getClassLoader().getResourceAsStream("db.properties")) {
             Properties properties = new Properties();
@@ -30,12 +26,22 @@ public class DataBaseUtil {
 
             dataSource = new HikariDataSource(config);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
     public static Connection getConnection() throws SQLException {
+        if (dataSource == null) {
+            initDataSource();
+        }
         return dataSource.getConnection();
+    }
+
+    public static void resetDataSource() {
+        if (dataSource != null) {
+            dataSource.close();
+            dataSource = null;
+        }
     }
 
     public static void setDataSource(HikariDataSource ds) {
