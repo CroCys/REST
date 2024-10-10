@@ -17,6 +17,11 @@ public class DataBaseUtil {
             Properties properties = new Properties();
             properties.load(input);
 
+            String jdbcUrl = System.getProperty("jdbc.url", properties.getProperty("jdbc.url"));
+            String jdbcUsername = System.getProperty("jdbc.username", properties.getProperty("jdbc.username"));
+            String jdbcPassword = System.getProperty("jdbc.password", properties.getProperty("jdbc.password"));
+            String jdbcDriver = System.getProperty("jdbc.driver", properties.getProperty("jdbc.driver"));
+
             HikariConfig config = new HikariConfig();
             config.setJdbcUrl(properties.getProperty("jdbc.url"));
             config.setUsername(properties.getProperty("jdbc.username"));

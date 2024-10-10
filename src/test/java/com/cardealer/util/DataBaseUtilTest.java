@@ -38,6 +38,7 @@ public class DataBaseUtilTest {
     void testGetConnection() {
         try (Connection connection = DataBaseUtil.getConnection()) {
             assertNotNull(connection);
+            assertTrue(connection.isValid(1));
         } catch (SQLException e) {
             fail(e.getMessage());
         }

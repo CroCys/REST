@@ -77,26 +77,6 @@ public class CarRepositoryTest {
         verify(carRepository, times(1)).addCar(carDto);
     }
 
-//    @Test
-//    void testUpdateCar() throws SQLException {
-//        Manufacturer manufacturer = new Manufacturer();
-//        manufacturer.setId(3);
-//
-//        Car car = new Car();
-//        car.setId(carDto.getId());
-//        car.setModel(carDto.getModel());
-//        car.setManufacturer(manufacturer);
-//        car.setCustomers(Collections.emptyList());
-//
-//        when(carRepository.getCarById(carDto.getId())).thenReturn(carDto);
-//
-//        Car mappedCar = CarMapper.toEntity(carDto, manufacturer, Collections.emptyList());
-//
-//        carRepoUnderTest.updateCar(carDto);
-//
-//        verify(carRepository, times(1)).updateCar(eq(carDto));
-//    }
-
     @Test
     void testDeleteCar() throws SQLException {
         carRepository.deleteCar(1);
