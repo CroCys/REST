@@ -20,14 +20,14 @@ public class DataBaseUtil {
             String jdbcUrl = System.getProperty("jdbc.url", properties.getProperty("jdbc.url"));
             String jdbcUsername = System.getProperty("jdbc.username", properties.getProperty("jdbc.username"));
             String jdbcPassword = System.getProperty("jdbc.password", properties.getProperty("jdbc.password"));
-            String jdbcDriver = System.getProperty("jdbc.driver", properties.getProperty("jdbc.driver"));
+            String jdbcDriver = System.getProperty("jdbc.driver", properties.getProperty("jdbc.driver", "org.postgresql.Driver"));
 
             HikariConfig config = new HikariConfig();
-            config.setJdbcUrl(properties.getProperty("jdbc.url"));
-            config.setUsername(properties.getProperty("jdbc.username"));
-            config.setPassword(properties.getProperty("jdbc.password"));
-            config.setMaximumPoolSize(Integer.parseInt(properties.getProperty("jdbc.pool.size")));
-            config.setDriverClassName("org.postgresql.Driver");
+            config.setJdbcUrl(jdbcUrl);  // Используем URL из системных свойств
+            config.setUsername(jdbcUsername);  // Используем Username из системных свойств
+            config.setPassword(jdbcPassword);  // Используем Password из системных свойств
+            config.setDriverClassName(jdbcDriver);  // Используем Driver
+            config.setMaximumPoolSize(Integer.parseInt(properties.getProperty("jdbc.pool.size", "10")));
 
             dataSource = new HikariDataSource(config);
         } catch (IOException e) {
