@@ -39,13 +39,4 @@ public class Manufacturer {
     public void setCars(List<Car> cars) {
         this.cars = cars;
     }
-
-    @Override
-    public String toString() {
-        return "Manufacturer{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", cars=" + cars +
-                '}';
-    }
 }

@@ -38,7 +38,6 @@ public class CustomerRepository {
             statement.executeUpdate();
         }
 
-        // Update relationships (Customer-Car)
         updateCustomerCars(customer);
     }
 
@@ -53,7 +52,6 @@ public class CustomerRepository {
             statement.executeUpdate();
         }
 
-        // Update relationships (Customer-Car)
         updateCustomerCars(customer);
     }
 

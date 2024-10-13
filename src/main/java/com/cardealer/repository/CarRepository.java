@@ -15,18 +15,22 @@ import java.util.List;
 
 public class CarRepository {
 
-    public CarDto getCarById(int id) throws SQLException {
-        String query = "SELECT * FROM car WHERE id = ?";
-        try (Connection connection = DataBaseUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet != null && resultSet.next()) {
-                Car car = mapToCar(resultSet);
-                return CarMapper.toDTO(car);
+    public CarDto getCarById(int carId) throws SQLException {
+        String sql = "SELECT c.id, c.model, c.manufacturer_id, m.id as manufacturerId, m.name as manufacturerName " +
+                "FROM cars c JOIN manufacturers m ON c.manufacturer_id = m.id WHERE c.id = ?";
+        try (PreparedStatement preparedStatement = DataBaseUtil.getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, carId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                CarDto carDto = new CarDto();
+                carDto.setId(resultSet.getInt("id"));
+                carDto.setModel(resultSet.getString("model"));
+                carDto.setManufacturerId(resultSet.getInt("manufacturerId"));
+                return carDto;
+            } else {
+                return null;
             }
         }
-        return new CarDto();
     }
 
     public void addCar(CarDto carDTO) throws SQLException {
@@ -61,13 +65,12 @@ public class CarRepository {
             statement.executeUpdate();
         }
 
-        // Update relationships (Car-Customer)
         updateCarCustomers(car);
     }
 
     public void deleteCar(int id) throws SQLException {
-        deleteCarCustomers(id); // Удаляем связи с клиентами
-        deleteCarById(id);      // Удаляем автомобиль
+        deleteCarCustomers(id);
+        deleteCarById(id);
     }
 
     private void deleteCarCustomers(int carId) throws SQLException {
@@ -134,36 +137,6 @@ public class CarRepository {
                 insertStatement.addBatch();
             }
             insertStatement.executeBatch();
-        }
-    }
-
-    private Car mapToCar(ResultSet resultSet) throws SQLException {
-        Car car = new Car();
-        car.setId(resultSet.getInt("id"));
-        car.setModel(resultSet.getString("model"));
-
-        Manufacturer manufacturer = getManufacturerById(resultSet.getInt("manufacturer_id"));
-        car.setManufacturer(manufacturer);
-
-        List<Customer> customers = getCustomersByCarId(resultSet.getInt("id"));
-        car.setCustomers(customers);
-
-        return car;
-    }
-
-    private List<Customer> getCustomersByCarId(int carId) throws SQLException {
-        String query = "SELECT customer.* FROM customer " +
-                "JOIN car_customer ON customer.id = car_customer.customer_id " +
-                "WHERE car_customer.car_id = ?";
-        try (Connection connection = DataBaseUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, carId);
-            ResultSet resultSet = statement.executeQuery();
-            List<Customer> customers = new ArrayList<>();
-            while (resultSet.next()) {
-                customers.add(mapToCustomer(resultSet));
-            }
-            return customers;
         }
     }
 

@@ -23,10 +23,10 @@ public class DataBaseUtil {
             String jdbcDriver = System.getProperty("jdbc.driver", properties.getProperty("jdbc.driver", "org.postgresql.Driver"));
 
             HikariConfig config = new HikariConfig();
-            config.setJdbcUrl(jdbcUrl);  // Используем URL из системных свойств
-            config.setUsername(jdbcUsername);  // Используем Username из системных свойств
-            config.setPassword(jdbcPassword);  // Используем Password из системных свойств
-            config.setDriverClassName(jdbcDriver);  // Используем Driver
+            config.setJdbcUrl(jdbcUrl);
+            config.setUsername(jdbcUsername);
+            config.setPassword(jdbcPassword);
+            config.setDriverClassName(jdbcDriver);
             config.setMaximumPoolSize(Integer.parseInt(properties.getProperty("jdbc.pool.size", "10")));
 
             dataSource = new HikariDataSource(config);
@@ -47,9 +47,5 @@ public class DataBaseUtil {
             dataSource.close();
             dataSource = null;
         }
-    }
-
-    public static void setDataSource(HikariDataSource ds) {
-        dataSource = ds;
     }
 }

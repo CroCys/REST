@@ -49,14 +49,4 @@ public class Car {
     public void setCustomers(List<Customer> customers) {
         this.customers = customers;
     }
-
-    @Override
-    public String toString() {
-        return "Car{" +
-                "id=" + id +
-                ", model='" + model + '\'' +
-                ", manufacturer=" + manufacturer +
-                ", customers=" + customers +
-                '}';
-    }
 }
